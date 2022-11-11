@@ -14,6 +14,10 @@ func main() {
 		c.HTML(200, "index.html", nil)
 	})
 
+	router.GET("/", func(c *gin.Context) {
+		c.String(200, "success")
+	})
+
 	router.GET("/ws/:roomId", func(c *gin.Context) {
 		roomId := c.Param("roomId")
 		serveWs(c.Writer, c.Request, roomId)
