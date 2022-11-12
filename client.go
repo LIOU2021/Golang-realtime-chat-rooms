@@ -56,7 +56,7 @@ func (s subscription) readPump() {
 			break
 		}
 		m := message{msg, s.room}
-		h.broadcast <- m
+		h.broadcast <- m //訊息推播
 	}
 }
 
@@ -100,9 +100,9 @@ func serveWs(w http.ResponseWriter, r *http.Request, roomId string) {
 		log.Println(err.Error())
 		return
 	}
-	c := &connection{send: make(chan []byte, 256), ws: ws}
-	s := subscription{c, roomId}
-	h.register <- s
-	go s.writePump()
-	go s.readPump()
+	c := &connection{send: make(chan []byte, 256), ws: ws} //個人的連線
+	s := subscription{c, roomId}                           //個人欲訂閱的房間
+	h.register <- s                                        //註冊hub，有人加入了連線
+	go s.writePump()                                       //當前用戶發送訊息時
+	go s.readPump()                                        //接收其他用戶訊息時
 }
