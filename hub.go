@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 type message struct {
 	data []byte
 	room string
@@ -30,20 +32,22 @@ var h = hub{
 	broadcast:  make(chan message),
 	register:   make(chan subscription),
 	unregister: make(chan subscription),
-	rooms:      make(map[string]map[*connection]bool),
+	rooms:      make(map[string]map[*connection]bool), //存放所有房間
 }
 
 func (h *hub) run() {
 	for {
 		select {
-		case s := <-h.register:
+		case s := <-h.register: //加入聊天室
+			fmt.Println("<-h.register : ", s.room)
 			connections := h.rooms[s.room]
 			if connections == nil {
 				connections = make(map[*connection]bool)
 				h.rooms[s.room] = connections
 			}
 			h.rooms[s.room][s.conn] = true
-		case s := <-h.unregister:
+		case s := <-h.unregister: //離開聊天室
+			fmt.Println("<-h.unregister : ", s.room)
 			connections := h.rooms[s.room]
 			if connections != nil {
 				if _, ok := connections[s.conn]; ok {
@@ -54,7 +58,8 @@ func (h *hub) run() {
 					}
 				}
 			}
-		case m := <-h.broadcast:
+		case m := <-h.broadcast: //對聊天室發送訊息
+			fmt.Println("<-h.broadcast : ", m.room)
 			connections := h.rooms[m.room]
 			for c := range connections {
 				select {
