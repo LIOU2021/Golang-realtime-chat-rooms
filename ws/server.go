@@ -34,9 +34,10 @@ func ServeWs(w http.ResponseWriter, r *http.Request, h *hub, roomId string) {
 		log.Println(err.Error())
 		return
 	}
-	c := &connection{send: make(chan []byte, 256), ws: ws} //個人的連線
-	s := subscription{c, roomId}                           //個人欲訂閱的房間
-	h.register <- s                                        //註冊hub，有人加入了連線
-	go s.writePump()                                       //server 寫進websocket的訊息
-	go s.readPump(h)                                       //server 讀取前端發過來的訊息
+	// c := &connection{send: make(chan []byte, 256), ws: ws}
+	c := NewConnection(ws)          //個人的連線
+	s := NewSubscription(c, roomId) //個人欲訂閱的房間
+	h.register <- *s                //註冊hub，有人加入了連線
+	go s.writePump()                //server 寫進websocket的訊息
+	go s.readPump(h)                //server 讀取前端發過來的訊息
 }

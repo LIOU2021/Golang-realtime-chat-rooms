@@ -12,6 +12,10 @@ type subscription struct {
 	room string
 }
 
+func NewSubscription(c *connection, roomId string) *subscription {
+	return &subscription{c, roomId}
+}
+
 // readPump pumps messages from the websocket connection to the hub.
 func (s subscription) readPump(h *hub) {
 	c := s.conn
