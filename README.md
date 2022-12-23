@@ -7,10 +7,6 @@ go run main.go
  
 http://localhost:8080/room/1
 
-
-### todo
-- [為connect 增加ID](https://stackoverflow.com/questions/64631848/how-to-create-an-autoincrement-id-field)
-
 ### how to use ?
 - step1 : New your hub. see  .\ws\hub_list.go
 ```go
