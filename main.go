@@ -1,11 +1,13 @@
 package main
 
 import (
+	"LIOU2021/Golang-realtime-chat-rooms/ws"
+
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	go h.run()
+	go ws.DemoHub.Run()
 
 	router := gin.New()
 	router.LoadHTMLFiles("index.html")
@@ -15,12 +17,15 @@ func main() {
 	})
 
 	router.GET("/", func(c *gin.Context) {
+
+		ws.DemoHub.PushRoom([]byte("hello word"), "2")
+
 		c.String(200, "success")
 	})
 
 	router.GET("/ws/:roomId", func(c *gin.Context) {
 		roomId := c.Param("roomId")
-		serveWs(c.Writer, c.Request, roomId)
+		ws.ServeWs(c.Writer, c.Request, ws.DemoHub, roomId)
 	})
 
 	router.Run("0.0.0.0:8080")
