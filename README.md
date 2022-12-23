@@ -32,4 +32,6 @@ router.GET("/ws/:roomId", func(c *gin.Context) {
 ```go
 // push message to room id 2
 ws.DemoHub.PushRoom([]byte("hello word"), "2")
+//push message to all connect user
+ws.DemoHub.PushAll([]byte("hello every body"))
 ```

@@ -44,6 +44,14 @@ func (h *hub) PushRoom(msg []byte, roomId string) {
 	h.broadcast <- m //訊息推播
 }
 
+// push message to all user
+func (h *hub) PushAll(msg []byte) {
+	for i := range h.rooms {
+		m := message{msg, i}
+		h.broadcast <- m
+	}
+}
+
 // listen register, unregister, broadcast
 func (h *hub) Run() {
 	for {

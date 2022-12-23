@@ -17,10 +17,13 @@ func main() {
 	})
 
 	router.GET("/", func(c *gin.Context) {
-
 		ws.DemoHub.PushRoom([]byte("hello word"), "2")
-
 		c.String(200, "success")
+	})
+
+	router.GET("/push-all", func(c *gin.Context) {
+		ws.DemoHub.PushAll([]byte("hello every body"))
+		c.String(200, "to all")
 	})
 
 	router.GET("/ws/:roomId", func(c *gin.Context) {
