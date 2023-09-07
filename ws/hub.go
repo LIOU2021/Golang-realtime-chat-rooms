@@ -57,7 +57,7 @@ func (h *hub) Run() {
 	for {
 		select {
 		case s := <-h.register: //加入聊天室
-			log.Printf("hub : %s, event : register, room : %s", h.GetName(), s.room)
+			log.Printf("hub : %s, event : register, room : %s, connectionId: %d", h.GetName(), s.room, s.conn.GetId())
 			connections := h.rooms[s.room]
 			if connections == nil {
 				connections = make(map[*connection]bool)
@@ -65,7 +65,7 @@ func (h *hub) Run() {
 			}
 			h.rooms[s.room][s.conn] = true
 		case s := <-h.unregister: //離開聊天室
-			log.Printf("hub : %s, event : unregister, room : %s", h.GetName(), s.room)
+			log.Printf("hub : %s, event : unregister, room : %s, connectionId: %d", h.GetName(), s.room, s.conn.GetId())
 			connections := h.rooms[s.room]
 			if connections != nil {
 				if _, ok := connections[s.conn]; ok {
@@ -74,6 +74,7 @@ func (h *hub) Run() {
 					if len(connections) == 0 {
 						delete(h.rooms, s.room)
 					}
+					Ai.PutID(s.conn.GetId())
 				}
 			}
 		case m := <-h.broadcast: //對聊天室發送訊息
